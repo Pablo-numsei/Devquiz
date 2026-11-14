@@ -182,3 +182,5 @@
   .review-alternative { align-items: flex-start; }
   .review-alternative-status { max-width: 94px; }
 }
+
+.review-not-answered { color: #e3bd82; font-size: 10px; }
