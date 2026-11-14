@@ -4,5 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface TentativaQuestaoRepository extends JpaRepository<TentativaQuestao, Long> {
-    List<TentativaQuestao> findByTentativaId(Long tentativaId);
+    List<TentativaQuestao> findByTentativa_Id(Long tentativaId);
 }
