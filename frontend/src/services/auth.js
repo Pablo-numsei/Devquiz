@@ -48,6 +48,10 @@ export function listarHistoricoTentativas(token) {
   return request('/api/quiz/tentativas/historico', { token })
 }
 
+export function revisarTentativa(token, tentativaId) {
+  return request(`/api/quiz/tentativas/${tentativaId}/revisao`, { token })
+}
+
 export function iniciarTentativa(token, payload) {
   return request('/api/quiz/tentativas', {
     method: 'POST',
