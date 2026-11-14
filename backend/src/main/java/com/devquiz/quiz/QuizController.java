@@ -46,6 +46,13 @@ public class QuizController {
         return quizService.listarHistorico(authentication.getName());
     }
 
+    @GetMapping("/tentativas/{id}/revisao")
+    public QuizService.RevisaoResponse revisar(
+            Authentication authentication,
+            @PathVariable Long id) {
+        return quizService.revisarTentativa(authentication.getName(), id);
+    }
+
     @GetMapping("/tentativas/{id}")
     public QuizService.InicioResponse obter(
             Authentication authentication,
