@@ -41,6 +41,11 @@ public class QuizController {
         return quizService.listarPendentes(authentication.getName());
     }
 
+    @GetMapping("/tentativas/historico")
+    public List<QuizService.HistoricoResponse> historico(Authentication authentication) {
+        return quizService.listarHistorico(authentication.getName());
+    }
+
     @GetMapping("/tentativas/{id}")
     public QuizService.InicioResponse obter(
             Authentication authentication,
