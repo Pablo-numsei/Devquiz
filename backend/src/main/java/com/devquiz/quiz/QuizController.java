@@ -36,15 +36,31 @@ public class QuizController {
                 request.quantidade());
     }
 
+    @GetMapping("/tentativas/pendentes")
+    public List<QuizService.PendenteResponse> pendentes(Authentication authentication) {
+        return quizService.listarPendentes(authentication.getName());
+    }
+
+    @GetMapping("/tentativas/{id}")
+    public QuizService.InicioResponse obter(
+            Authentication authentication,
+            @PathVariable Long id) {
+        return quizService.obterTentativa(authentication.getName(), id);
+    }
+
+    @PutMapping("/tentativas/{id}/respostas")
+    public QuizService.FeedbackResponse salvarResposta(
+            Authentication authentication,
+            @PathVariable Long id,
+            @Valid @RequestBody RespostaRequest request) {
+        return quizService.salvarResposta(authentication.getName(), id, request);
+    }
+
     @PostMapping("/tentativas/{id}/finalizar")
     public QuizService.ResultadoResponse finalizar(
             Authentication authentication,
-            @PathVariable Long id,
-            @RequestBody FinalizarRequest request) {
-        return quizService.finalizar(
-                authentication.getName(),
-                id,
-                request == null ? List.of() : request.respostas());
+            @PathVariable Long id) {
+        return quizService.finalizar(authentication.getName(), id);
     }
 
     public record InicioRequest(
@@ -52,5 +68,7 @@ public class QuizController {
             @NotNull String dificuldade,
             Integer quantidade) {}
 
-    public record FinalizarRequest(List<QuizService.RespostaRequest> respostas) {}
+    public record RespostaRequest(
+            @NotNull Long questaoId,
+            Long alternativaId) {}
 }
