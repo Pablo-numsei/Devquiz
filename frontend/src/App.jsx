@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   ArrowRight,
   Braces,
@@ -9,11 +9,13 @@ import {
   Globe,
   Layers3,
   LockKeyhole,
+  LogOut,
   Terminal,
   Trophy,
   Zap,
 } from 'lucide-react'
 import './App.css'
+import { cadastrarUsuario, entrarUsuario, buscarPerfil } from './services/auth.js'
 
 const categories = [
   { name: 'JavaScript', description: 'Fundamentos, funções e lógica', icon: Braces, count: '24 questões' },
@@ -33,12 +35,102 @@ const sampleQuestion = {
   explanation: 'O método join() une todos os elementos de um array em uma string. É possível definir o separador entre eles.',
 }
 
+
+function AuthScreen({ onAuthenticated }) {
+  const [mode, setMode] = useState('login')
+  const [apelido, setApelido] = useState('')
+  const [pin, setPin] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const submit = async (event) => {
+    event.preventDefault()
+    setError('')
+    setLoading(true)
+    try {
+      const response = mode === 'register'
+        ? await cadastrarUsuario(apelido.trim(), pin)
+        : await entrarUsuario(apelido.trim(), pin)
+      localStorage.setItem('devquiz_session', JSON.stringify(response))
+      onAuthenticated(response)
+    } catch (err) {
+      setError(err.message || 'Não foi possível realizar o acesso.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <main className="auth-shell">
+      <section className="auth-panel">
+        <a className="brand auth-brand" href="#inicio">
+          <span className="brand-mark"><Code2 size={20} /></span>
+          <span>dev<span className="brand-accent">quiz</span></span>
+        </a>
+        <div className="auth-heading">
+          <div className="eyebrow"><span className="eyebrow-line" /> SUA JORNADA COMEÇA AQUI</div>
+          <h1>{mode === 'register' ? 'Crie seu perfil.' : 'Entre para praticar.'}</h1>
+          <p>{mode === 'register' ? 'Escolha um apelido e um PIN de 4 dígitos para salvar seu progresso.' : 'Acesse seu perfil e continue acompanhando sua evolução.'}</p>
+        </div>
+        <div className="auth-tabs">
+          <button type="button" className={mode === 'login' ? 'auth-tab active' : 'auth-tab'} onClick={() => { setMode('login'); setError('') }}>Entrar</button>
+          <button type="button" className={mode === 'register' ? 'auth-tab active' : 'auth-tab'} onClick={() => { setMode('register'); setError('') }}>Criar perfil</button>
+        </div>
+        <form className="auth-form" onSubmit={submit}>
+          <label htmlFor="nickname">APELIDO</label>
+          <input id="nickname" value={apelido} onChange={(event) => setApelido(event.target.value.replace(/[^a-zA-Z0-9_]/g, '').slice(0, 20))} placeholder="Ex.: DevPablo" minLength={3} maxLength={20} autoComplete="username" required />
+          <small>De 3 a 20 caracteres. Use letras, números ou _.</small>
+          <label htmlFor="pin">PIN DE 4 DÍGITOS</label>
+          <input id="pin" type="password" inputMode="numeric" pattern="[0-9]{4}" maxLength={4} value={pin} onChange={(event) => setPin(event.target.value.replace(/\D/g, '').slice(0, 4))} placeholder="••••" autoComplete={mode === 'register' ? 'new-password' : 'current-password'} required />
+          {error && <div className="auth-error" role="alert">{error}</div>}
+          <button className="primary-button auth-submit" type="submit" disabled={loading || apelido.trim().length < 3 || pin.length !== 4}>
+            {loading ? 'Aguarde...' : mode === 'register' ? 'Criar perfil' : 'Entrar no DevQuiz'} <ArrowRight size={17} />
+          </button>
+        </form>
+        <p className="auth-privacy"><LockKeyhole size={13} /> Seu PIN é armazenado de forma protegida.</p>
+      </section>
+      <aside className="auth-aside">
+        <div className="auth-aside-glow" />
+        <div className="auth-code-card">
+          <div className="window-top"><div className="window-dots"><i /><i /><i /></div><span>seu_progresso.js</span><Terminal size={15} /></div>
+          <div className="code-content">
+            <div className="code-line"><span className="line-number">01</span><span><b className="code-purple">const</b> <b className="code-blue">progresso</b> = {'{'}</span></div>
+            <div className="code-line"><span className="line-number">02</span><span className="indent"><b className="code-cyan">pratica</b>: <b className="code-green">"constante"</b>,</span></div>
+            <div className="code-line"><span className="line-number">03</span><span className="indent"><b className="code-cyan">desafios</b>: <b className="code-orange">"ilimitados"</b>,</span></div>
+            <div className="code-line"><span className="line-number">04</span><span className="indent"><b className="code-cyan">evolucao</b>: <b className="code-green">true</b></span></div>
+            <div className="code-line"><span className="line-number">05</span><span>{'}'}</span></div>
+          </div>
+          <div className="window-bottom"><span><span className="live-dot" /> DevQuiz</span><span>READY</span></div>
+        </div>
+        <p>Aprenda no seu ritmo. Registre cada conquista.</p>
+      </aside>
+    </main>
+  )
+}
+
 function App() {
+  const [session, setSession] = useState(null)
   const [category, setCategory] = useState('JavaScript')
   const [difficulty, setDifficulty] = useState('Iniciante')
   const [started, setStarted] = useState(false)
   const [selected, setSelected] = useState(null)
   const [finished, setFinished] = useState(false)
+
+  useEffect(() => {
+    const saved = localStorage.getItem('devquiz_session')
+    if (!saved) return
+    try {
+      const parsed = JSON.parse(saved)
+      if (!parsed.token) throw new Error('Sessão inválida')
+      buscarPerfil(parsed.token)
+        .then((profile) => setSession({ ...parsed, usuario: profile }))
+        .catch(() => localStorage.removeItem('devquiz_session'))
+    } catch {
+      localStorage.removeItem('devquiz_session')
+    }
+  }, [])
+
+  const handleAuthenticated = (data) => setSession(data)
 
   const startQuiz = () => {
     setSelected(null)
@@ -51,6 +143,16 @@ function App() {
     setSelected(null)
     setFinished(false)
   }
+
+  const logout = () => {
+    localStorage.removeItem('devquiz_session')
+    setSession(null)
+    setStarted(false)
+    setSelected(null)
+    setFinished(false)
+  }
+
+  if (!session) return <AuthScreen onAuthenticated={handleAuthenticated} />
 
   if (started) {
     return (
@@ -126,7 +228,7 @@ function App() {
           <a href="#categorias">Categorias</a>
           <a href="#sobre">Sobre</a>
         </nav>
-        <div className="header-status"><span className="live-dot" /> Plataforma de estudos</div>
+        <div className="user-session"><span className="user-avatar">{session.usuario?.apelido?.slice(0, 1).toUpperCase()}</span><span className="user-name">{session.usuario?.apelido}</span><button className="logout-button" onClick={logout} aria-label="Sair"><LogOut size={15} /></button></div>
       </header>
 
       <section className="hero-section" id="inicio">
