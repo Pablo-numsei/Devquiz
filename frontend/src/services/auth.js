@@ -44,6 +44,10 @@ export function listarTentativasPendentes(token) {
   return request('/api/quiz/tentativas/pendentes', { token })
 }
 
+export function listarHistoricoTentativas(token) {
+  return request('/api/quiz/tentativas/historico', { token })
+}
+
 export function iniciarTentativa(token, payload) {
   return request('/api/quiz/tentativas', {
     method: 'POST',
