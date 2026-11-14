@@ -145,6 +145,68 @@ public class QuizService {
     }
 
     @Transactional(readOnly = true)
+    public RevisaoResponse revisarTentativa(String apelido, Long tentativaId) {
+        Usuario usuario = buscarUsuario(apelido);
+        Tentativa tentativa = buscarTentativaDoUsuario(tentativaId, usuario.getId());
+
+        if (!"FINALIZADA".equals(tentativa.getStatus())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Somente desafios concluídos podem ser revisados.");
+        }
+
+        List<TentativaQuestao> itens = tentativaQuestoes.findByTentativa_IdOrderByIdAsc(tentativaId);
+        Map<Long, Resposta> respostasSalvas = respostas.findByTentativa_Id(tentativaId).stream()
+                .collect(Collectors.toMap(r -> r.getQuestao().getId(), r -> r));
+
+        List<QuestaoRevisaoResponse> questoesRevisao = itens.stream()
+                .map(item -> {
+                    Questao questao = item.getQuestao();
+                    Resposta resposta = respostasSalvas.get(questao.getId());
+                    Long selecionadaId = resposta == null || resposta.getAlternativa() == null
+                            ? null : resposta.getAlternativa().getId();
+
+                    Alternativa correta = questao.getAlternativas().stream()
+                            .filter(a -> Boolean.TRUE.equals(a.getCorreta()))
+                            .findFirst()
+                            .orElse(null);
+
+                    List<AlternativaRevisaoResponse> alternativas = questao.getAlternativas().stream()
+                            .map(a -> new AlternativaRevisaoResponse(
+                                    a.getId(),
+                                    a.getTexto(),
+                                    Objects.equals(a.getId(), selecionadaId),
+                                    Boolean.TRUE.equals(a.getCorreta())))
+                            .toList();
+
+                    return new QuestaoRevisaoResponse(
+                            questao.getId(),
+                            questao.getCategoria().getNome(),
+                            questao.getEnunciado(),
+                            questao.getCodigo(),
+                            selecionadaId,
+                            correta == null ? null : correta.getId(),
+                            resposta != null && Boolean.TRUE.equals(resposta.getCorreta()),
+                            alternativas,
+                            questao.getExplicacao());
+                })
+                .toList();
+
+        List<String> nomesCategorias = itens.stream()
+                .map(item -> item.getQuestao().getCategoria().getNome())
+                .distinct()
+                .toList();
+
+        return new RevisaoResponse(
+                tentativa.getId(),
+                nomesCategorias,
+                tentativa.getDificuldade(),
+                tentativa.getTotalQuestoes(),
+                tentativa.getAcertos(),
+                tentativa.getPontuacao(),
+                tentativa.getCriadoEm(),
+                questoesRevisao);
+    }
+
+    @Transactional(readOnly = true)
     public InicioResponse obterTentativa(String apelido, Long tentativaId) {
         Usuario usuario = buscarUsuario(apelido);
         Tentativa tentativa = buscarTentativaDoUsuario(tentativaId, usuario.getId());
@@ -158,7 +220,7 @@ public class QuizService {
                         r -> r.getQuestao().getId(),
                         r -> r.getAlternativa().getId()));
 
-        List<Questao> perguntas = tentativaQuestoes.findByTentativa_Id(tentativaId).stream()
+        List<Questao> perguntas = tentativaQuestoes.findByTentativa_IdOrderByIdAsc(tentativaId).stream()
                 .map(TentativaQuestao::getQuestao)
                 .toList();
         return montarInicio(tentativa, perguntas, selecionadas);
@@ -337,4 +399,11 @@ public class QuizService {
                                    int respondidas, List<String> categorias, LocalDateTime criadoEm) {}
     public record HistoricoResponse(Long tentativaId, List<String> categorias, String dificuldade,
                                     int totalQuestoes, int acertos, int pontuacao, LocalDateTime criadoEm) {}
+    public record AlternativaRevisaoResponse(Long id, String texto, boolean selecionada, boolean correta) {}
+    public record QuestaoRevisaoResponse(Long questaoId, String categoria, String enunciado, String codigo,
+                                         Long alternativaSelecionadaId, Long alternativaCorretaId, boolean respostaCorreta,
+                                         List<AlternativaRevisaoResponse> alternativas, String explicacao) {}
+    public record RevisaoResponse(Long tentativaId, List<String> categorias, String dificuldade,
+                                  int totalQuestoes, int acertos, int pontuacao, LocalDateTime criadoEm,
+                                  List<QuestaoRevisaoResponse> questoes) {}
 }
