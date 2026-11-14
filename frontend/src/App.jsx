@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import {
   ArrowRight,
   Braces,
+  BookOpen,
   Check,
   ChevronRight,
   Code2,
@@ -15,7 +16,7 @@ import {
   Zap,
 } from 'lucide-react'
 import './App.css'
-import { cadastrarUsuario, entrarUsuario, buscarPerfil, listarCategorias, listarTentativasPendentes, listarHistoricoTentativas, iniciarTentativa, obterTentativa, salvarResposta, finalizarTentativa } from './services/auth.js'
+import { cadastrarUsuario, entrarUsuario, buscarPerfil, listarCategorias, listarTentativasPendentes, listarHistoricoTentativas, iniciarTentativa, obterTentativa, salvarResposta, finalizarTentativa, revisarTentativa } from './services/auth.js'
 
 const categoryIcons = {
   JavaScript: Braces,
@@ -112,6 +113,8 @@ function App() {
   const [quizResult, setQuizResult] = useState(null)
   const [pendingAttempts, setPendingAttempts] = useState([])
   const [completedAttempts, setCompletedAttempts] = useState([])
+  const [reviewData, setReviewData] = useState(null)
+  const [reviewLoading, setReviewLoading] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -160,6 +163,19 @@ function App() {
       setCompletedAttempts(historico)
     } catch (err) {
       setError(err.message)
+    }
+  }
+
+  const openReview = async (attemptId) => {
+    setReviewLoading(true)
+    setError('')
+    try {
+      const data = await revisarTentativa(session.token, attemptId)
+      setReviewData(data)
+    } catch (err) {
+      setError(err.message || 'Não foi possível abrir a revisão deste quiz.')
+    } finally {
+      setReviewLoading(false)
     }
   }
 
@@ -284,6 +300,7 @@ function App() {
     setSelectedCategoryIds([])
     setPendingAttempts([])
     setCompletedAttempts([])
+    setReviewData(null)
     setStarted(false)
     setQuiz(null)
     setQuizResult(null)
@@ -291,6 +308,74 @@ function App() {
   }
 
   if (!session) return <AuthScreen onAuthenticated={handleAuthenticated} />
+
+  if (reviewData) {
+    return (
+      <main className="quiz-page">
+        <header className="topbar">
+          <button className="brand brand-button" onClick={() => setReviewData(null)} aria-label="Voltar ao histórico">
+            <span className="brand-mark"><Code2 size={20} /></span>
+            <span>dev<span className="brand-accent">quiz</span></span>
+          </button>
+          <span className="quiz-mode"><BookOpen size={14} /> Revisão de estudo</span>
+        </header>
+
+        <section className="question-wrap review-wrap">
+          <button className="back-link" onClick={() => setReviewData(null)}>← Voltar ao histórico</button>
+          <div className="review-title">
+            <p className="question-kicker">REVISE SEU DESEMPENHO</p>
+            <h1>Questões do desafio</h1>
+            <p>{reviewData.categorias.join(' + ')} | {reviewData.dificuldade}</p>
+          </div>
+
+          <div className="review-summary">
+            <div><strong>{reviewData.acertos}/{reviewData.totalQuestoes}</strong><span>ACERTOS</span></div>
+            <div><strong>{reviewData.totalQuestoes - reviewData.acertos}</strong><span>PARA REVISAR</span></div>
+            <div><strong>{reviewData.pontuacao}</strong><span>PONTOS</span></div>
+          </div>
+
+          <div className="review-question-list">
+            {reviewData.questoes.map((question, index) => (
+              <article className="review-question-card" key={question.questaoId}>
+                <div className="review-question-heading">
+                  <span>QUESTÃO {String(index + 1).padStart(2, '0')}</span>
+                  <strong className={question.respostaCorreta ? 'result-correct' : 'result-incorrect'}>
+                    {question.respostaCorreta ? 'Você acertou' : 'Você errou'}
+                  </strong>
+                </div>
+                <p className="review-category">{question.categoria}</p>
+                <h2>{question.enunciado}</h2>
+                {question.codigo && <pre className="question-code"><code>{question.codigo}</code></pre>}
+                <div className="review-alternatives">
+                  {question.alternativas.map((alternative, alternativeIndex) => (
+                    <div
+                      className={`review-alternative ${alternative.correta ? 'review-correct' : ''} ${alternative.selecionada && !alternative.correta ? 'review-wrong' : ''}`}
+                      key={alternative.id}
+                    >
+                      <span className="review-letter">{String.fromCharCode(65 + alternativeIndex)}</span>
+                      <span className="review-alternative-text">{alternative.texto}</span>
+                      <span className="review-alternative-status">
+                        {alternative.selecionada && alternative.correta ? 'Sua resposta correta' : ''}
+                        {alternative.selecionada && !alternative.correta ? 'Sua resposta' : ''}
+                        {!alternative.selecionada && alternative.correta ? 'Resposta correta' : ''}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                {!question.alternativaSelecionadaId && (
+                  <p className="review-unanswered">Você não selecionou uma alternativa nesta questão.</p>
+                )}
+                <div className="review-explanation">
+                  <strong>Explicação</strong>
+                  <p>{question.explicacao}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      </main>
+    )
+  }
 
   if (started && quiz) {
     const totalQuestions = quiz.questoes.length
@@ -498,6 +583,15 @@ function App() {
                   <div><strong>{attempt.pontuacao}</strong><small>PONTOS</small></div>
                   <div><strong>{attempt.dificuldade}</strong><small>DIFICULDADE</small></div>
                 </div>
+                <button
+                  type="button"
+                  className="history-review-button"
+                  onClick={() => openReview(attempt.tentativaId)}
+                  disabled={reviewLoading}
+                >
+                  {reviewLoading ? 'Abrindo revisão...' : 'Revisar questões'}
+                  <BookOpen size={15} />
+                </button>
               </article>
             ))}
           </div>
