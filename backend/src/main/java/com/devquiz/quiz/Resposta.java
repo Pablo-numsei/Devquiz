@@ -32,4 +32,15 @@ public class Resposta {
         this.alternativa = alternativa;
         this.correta = correta;
     }
+
+    public void atualizar(Alternativa alternativa, boolean correta) {
+        this.alternativa = alternativa;
+        this.correta = correta;
+    }
+
+    public Long getId() { return id; }
+    public Tentativa getTentativa() { return tentativa; }
+    public Questao getQuestao() { return questao; }
+    public Alternativa getAlternativa() { return alternativa; }
+    public Boolean getCorreta() { return correta; }
 }
