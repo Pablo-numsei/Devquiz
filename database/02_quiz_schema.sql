@@ -1,5 +1,6 @@
 -- Estrutura relacional do banco DevQuiz.
 -- Execute depois de 01_usuarios.sql no banco DevQuiz.
+-- O script pode ser executado novamente sem recriar tabelas, categorias ou índices existentes.
 
 IF OBJECT_ID('dbo.categorias', 'U') IS NULL
 BEGIN
@@ -84,7 +85,11 @@ IF NOT EXISTS (SELECT 1 FROM dbo.categorias WHERE nome = 'SQL')
 IF NOT EXISTS (SELECT 1 FROM dbo.categorias WHERE nome = 'Segurança')
     INSERT INTO dbo.categorias (nome, descricao) VALUES ('Segurança', N'Web, redes e boas práticas');
 
-CREATE INDEX IX_questoes_categoria_dificuldade ON dbo.questoes (categoria_id, dificuldade, ativa);
-CREATE INDEX IX_alternativas_questao ON dbo.alternativas (questao_id);
-CREATE INDEX IX_tentativas_usuario_data ON dbo.tentativas (usuario_id, criado_em DESC);
-CREATE INDEX IX_respostas_tentativa ON dbo.respostas (tentativa_id);
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_questoes_categoria_dificuldade' AND object_id = OBJECT_ID('dbo.questoes'))
+    CREATE INDEX IX_questoes_categoria_dificuldade ON dbo.questoes (categoria_id, dificuldade, ativa);
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_alternativas_questao' AND object_id = OBJECT_ID('dbo.alternativas'))
+    CREATE INDEX IX_alternativas_questao ON dbo.alternativas (questao_id);
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_tentativas_usuario_data' AND object_id = OBJECT_ID('dbo.tentativas'))
+    CREATE INDEX IX_tentativas_usuario_data ON dbo.tentativas (usuario_id, criado_em DESC);
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_respostas_tentativa' AND object_id = OBJECT_ID('dbo.respostas'))
+    CREATE INDEX IX_respostas_tentativa ON dbo.respostas (tentativa_id);
