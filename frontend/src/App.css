@@ -96,3 +96,29 @@
 .logout-button { width: 30px; height: 30px; display: grid; place-items: center; border: 1px solid #302e39; border-radius: 6px; background: #15151d; color: #9693a0; cursor: pointer; }
 .logout-button:hover { border-color: #8e76c7; color: #c9b8f7; }
 @media (max-width: 760px) { .auth-shell { width: min(100% - 36px, 480px); grid-template-columns: 1fr; gap: 35px; padding: 35px 0; }.auth-panel { width: 100%; }.auth-brand { margin-bottom: 45px; }.auth-aside { min-height: 230px; }.auth-code-card { max-width: 370px; }.auth-aside > p { margin-bottom: 15px; } }
+
+
+/* Desafios salvos e resultados */
+.pending-section { padding: 8px 0 34px; }
+.pending-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.pending-card { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 17px; border: 1px solid #302a3b; border-radius: 9px; background: #111118; }
+.pending-card > div { display: grid; gap: 6px; min-width: 0; }
+.pending-card strong { overflow-wrap: anywhere; color: #e9e5f1; font-size: 12px; }
+.pending-card small { color: #918d9e; font-size: 10px; }
+.pending-card .primary-button { flex: 0 0 auto; min-height: 36px; padding: 0 12px; font-size: 10px; }
+.app-error { margin: 14px 0 0; }
+.result-stats { margin: 20px 0 10px; }
+.result-summary { color: #9995a5; font-size: 12px; line-height: 1.7; }
+.result-details { display: grid; gap: 10px; margin-top: 24px; }
+.result-detail { display: grid; grid-template-columns: 1fr auto; gap: 8px 14px; padding: 14px; border: 1px solid #2c2a35; border-radius: 7px; background: #15151d; }
+.result-detail strong { color: #e8e5ee; font-size: 11px; }
+.result-detail > span { font-size: 10px; }
+.result-detail p { grid-column: 1 / -1; margin: 0; color: #aaa7b3; font-size: 11px; line-height: 1.7; }
+.result-correct { color: #8bd3a2; }
+.result-incorrect { color: #e49aa1; }
+@media (max-width: 650px) {
+  .pending-grid { grid-template-columns: 1fr; }
+  .pending-card { align-items: flex-start; flex-direction: column; }
+  .pending-card .primary-button { width: 100%; }
+  .result-detail { grid-template-columns: 1fr; }
+}
