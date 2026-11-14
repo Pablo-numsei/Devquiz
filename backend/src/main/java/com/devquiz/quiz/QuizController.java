@@ -53,7 +53,10 @@ public class QuizController {
             Authentication authentication,
             @PathVariable Long id,
             @Valid @RequestBody RespostaRequest request) {
-        return quizService.salvarResposta(authentication.getName(), id, request);
+        return quizService.salvarResposta(
+                authentication.getName(),
+                id,
+                new QuizService.RespostaRequest(request.questaoId(), request.alternativaId()));
     }
 
     @PostMapping("/tentativas/{id}/finalizar")
