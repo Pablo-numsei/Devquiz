@@ -508,7 +508,7 @@ function App() {
           <div className="hero-stats">
             <div><strong>{String(categoryOptions.length).padStart(2, '0')}</strong><span>ÁREAS DE ESTUDO</span></div>
             <i />
-            <div><strong>100<span>+</span></strong><span>QUESTÕES PLANEJADAS</span></div>
+            <div><strong>10</strong><span>QUESTÕES CADASTRADAS</span></div>
             <i />
             <div><strong>03</strong><span>NÍVEIS</span></div>
           </div>
