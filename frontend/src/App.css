@@ -184,3 +184,43 @@
 }
 
 .review-not-answered { color: #e3bd82; font-size: 10px; }
+
+
+/* Ajustes adicionais para telas menores */
+@media (max-width: 760px) {
+  .topbar { gap: 14px; }
+  .main-nav { display: none; }
+  .user-session { margin-left: auto; }
+}
+
+@media (max-width: 560px) {
+  .app-shell, .quiz-page { width: calc(100% - 28px); }
+  .topbar { min-width: 0; gap: 10px; }
+  .user-session { gap: 6px; }
+  .user-name { display: none; }
+  .user-avatar { width: 27px; height: 27px; }
+  .logout-button { width: 28px; height: 28px; }
+  .hero-visual { width: 100%; min-width: 0; overflow: hidden; }
+  .code-window { transform: none; }
+  .visual-glow { width: min(82vw, 320px); }
+  .floating-card { right: 8px; max-width: calc(100% - 16px); }
+  .hero-stats { flex-wrap: wrap; }
+  .question-meta { gap: 10px; align-items: flex-start; }
+  .question-meta .eyebrow { flex-wrap: wrap; }
+  .question-number { white-space: nowrap; }
+  .review-question-heading { align-items: flex-start; }
+  .review-alternative { flex-wrap: wrap; }
+  .review-alternative-status { margin-left: 33px; max-width: 100%; text-align: left; }
+}
+
+@media (max-width: 360px) {
+  .app-shell, .quiz-page { width: calc(100% - 24px); }
+  .brand { gap: 7px; font-size: 16px; }
+  .brand-mark { width: 29px; height: 29px; }
+  .hero-copy h1 { font-size: 36px; }
+  .hero-stats { gap: 10px; }
+  .hero-stats strong { font-size: 17px; }
+  .review-summary { gap: 7px; padding: 13px 10px; }
+  .review-summary strong { font-size: 16px; }
+  .review-question-card { padding: 15px 11px; }
+}
