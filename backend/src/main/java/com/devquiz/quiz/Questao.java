@@ -1,6 +1,7 @@
 package com.devquiz.quiz;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Nationalized;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,12 +19,15 @@ public class Questao {
     @Column(nullable = false, length = 20)
     private String dificuldade;
 
+    @Nationalized
     @Column(nullable = false, length = 1000)
     private String enunciado;
 
+    @Nationalized
     @Column(columnDefinition = "nvarchar(max)")
     private String codigo;
 
+    @Nationalized
     @Column(nullable = false, columnDefinition = "nvarchar(max)")
     private String explicacao;
 
