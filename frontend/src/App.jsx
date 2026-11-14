@@ -339,8 +339,8 @@ function App() {
               <article className="review-question-card" key={question.questaoId}>
                 <div className="review-question-heading">
                   <span>QUESTÃO {String(index + 1).padStart(2, '0')}</span>
-                  <strong className={question.respostaCorreta ? 'result-correct' : 'result-incorrect'}>
-                    {question.respostaCorreta ? 'Você acertou' : 'Você errou'}
+                  <strong className={!question.alternativaSelecionadaId ? 'review-not-answered' : question.respostaCorreta ? 'result-correct' : 'result-incorrect'}>
+                    {!question.alternativaSelecionadaId ? 'Não respondida' : question.respostaCorreta ? 'Você acertou' : 'Você errou'}
                   </strong>
                 </div>
                 <p className="review-category">{question.categoria}</p>
