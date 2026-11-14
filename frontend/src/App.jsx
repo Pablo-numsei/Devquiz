@@ -15,7 +15,7 @@ import {
   Zap,
 } from 'lucide-react'
 import './App.css'
-import { cadastrarUsuario, entrarUsuario, buscarPerfil, listarCategorias, listarTentativasPendentes, iniciarTentativa, obterTentativa, salvarResposta, finalizarTentativa } from './services/auth.js'
+import { cadastrarUsuario, entrarUsuario, buscarPerfil, listarCategorias, listarTentativasPendentes, listarHistoricoTentativas, iniciarTentativa, obterTentativa, salvarResposta, finalizarTentativa } from './services/auth.js'
 
 const categoryIcons = {
   JavaScript: Braces,
@@ -111,6 +111,7 @@ function App() {
   const [feedback, setFeedback] = useState(null)
   const [quizResult, setQuizResult] = useState(null)
   const [pendingAttempts, setPendingAttempts] = useState([])
+  const [completedAttempts, setCompletedAttempts] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -134,11 +135,13 @@ function App() {
     Promise.all([
       listarCategorias(session.token),
       listarTentativasPendentes(session.token),
+      listarHistoricoTentativas(session.token),
     ])
-      .then(([categorias, pendentes]) => {
+      .then(([categorias, pendentes, historico]) => {
         if (!active) return
         setCategoryOptions(categorias)
         setPendingAttempts(pendentes)
+        setCompletedAttempts(historico)
       })
       .catch((err) => {
         if (active) setError(err.message || 'Não foi possível carregar os dados do DevQuiz.')
@@ -149,7 +152,12 @@ function App() {
   const refreshPendingAttempts = async () => {
     if (!session?.token) return
     try {
-      setPendingAttempts(await listarTentativasPendentes(session.token))
+      const [pendentes, historico] = await Promise.all([
+        listarTentativasPendentes(session.token),
+        listarHistoricoTentativas(session.token),
+      ])
+      setPendingAttempts(pendentes)
+      setCompletedAttempts(historico)
     } catch (err) {
       setError(err.message)
     }
@@ -275,6 +283,7 @@ function App() {
     setCategoryOptions([])
     setSelectedCategoryIds([])
     setPendingAttempts([])
+    setCompletedAttempts([])
     setStarted(false)
     setQuiz(null)
     setQuizResult(null)
@@ -447,18 +456,18 @@ function App() {
         </div>
       </section>
 
-      {pendingAttempts.length > 0 && (
-        <section className="pending-section">
-          <div className="section-heading">
-            <div><div className="eyebrow"><span className="eyebrow-line" /> CONTINUE DE ONDE PAROU</div><h2>Desafios <span>em andamento</span></h2></div>
-            <p>Seu progresso está salvo no banco de dados.</p>
-          </div>
+      <section className="pending-section">
+        <div className="section-heading">
+          <div><div className="eyebrow"><span className="eyebrow-line" /> CONTINUE DE ONDE PAROU</div><h2>Desafios <span>em andamento</span></h2></div>
+          <p>Suas tentativas incompletas ficam salvas aqui.</p>
+        </div>
+        {pendingAttempts.length > 0 ? (
           <div className="pending-grid">
             {pendingAttempts.map((attempt) => (
               <article className="pending-card" key={attempt.tentativaId}>
                 <div>
                   <strong>{attempt.categorias.join(' + ')}</strong>
-                  <small>{attempt.dificuldade} · {attempt.respondidas} de {attempt.totalQuestoes} respondidas</small>
+                  <small>{attempt.dificuldade} | {attempt.respondidas} de {attempt.totalQuestoes} respondidas</small>
                 </div>
                 <button className="primary-button" onClick={() => resumeAttempt(attempt.tentativaId)} disabled={loading}>
                   Continuar <ArrowRight size={16} />
@@ -466,8 +475,36 @@ function App() {
               </article>
             ))}
           </div>
-        </section>
-      )}
+        ) : (
+          <p className="history-empty">Nenhum desafio pendente. Quando você sair de um quiz antes de terminá-lo, ele aparecerá aqui.</p>
+        )}
+      </section>
+
+      <section className="history-section">
+        <div className="section-heading">
+          <div><div className="eyebrow"><span className="eyebrow-line" /> SEU DESEMPENHO</div><h2>Quizzes <span>realizados</span></h2></div>
+          <p>Consulte os resultados das suas tentativas concluídas.</p>
+        </div>
+        {completedAttempts.length > 0 ? (
+          <div className="history-grid">
+            {completedAttempts.map((attempt) => (
+              <article className="history-card" key={attempt.tentativaId}>
+                <div className="history-card-heading">
+                  <strong>{attempt.categorias.join(' + ')}</strong>
+                  <span>{new Date(attempt.criadoEm).toLocaleDateString('pt-BR')}</span>
+                </div>
+                <div className="history-card-stats">
+                  <div><strong>{attempt.acertos}/{attempt.totalQuestoes}</strong><small>ACERTOS</small></div>
+                  <div><strong>{attempt.pontuacao}</strong><small>PONTOS</small></div>
+                  <div><strong>{attempt.dificuldade}</strong><small>DIFICULDADE</small></div>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <p className="history-empty">Você ainda não concluiu nenhum quiz. Depois de finalizar seu primeiro desafio, o resultado aparecerá aqui.</p>
+        )}
+      </section>
 
       <section className="categories-section" id="categorias">
         <div className="section-heading">
