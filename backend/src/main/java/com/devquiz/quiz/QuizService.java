@@ -123,6 +123,28 @@ public class QuizService {
     }
 
     @Transactional(readOnly = true)
+    public List<HistoricoResponse> listarHistorico(String apelido) {
+        Usuario usuario = buscarUsuario(apelido);
+        return tentativas.findByUsuario_IdAndStatusOrderByCriadoEmDesc(usuario.getId(), "FINALIZADA")
+                .stream()
+                .map(tentativa -> {
+                    List<String> nomesCategorias = tentativaQuestoes.findByTentativa_Id(tentativa.getId()).stream()
+                            .map(item -> item.getQuestao().getCategoria().getNome())
+                            .distinct()
+                            .toList();
+                    return new HistoricoResponse(
+                            tentativa.getId(),
+                            nomesCategorias,
+                            tentativa.getDificuldade(),
+                            tentativa.getTotalQuestoes(),
+                            tentativa.getAcertos(),
+                            tentativa.getPontuacao(),
+                            tentativa.getCriadoEm());
+                })
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
     public InicioResponse obterTentativa(String apelido, Long tentativaId) {
         Usuario usuario = buscarUsuario(apelido);
         Tentativa tentativa = buscarTentativaDoUsuario(tentativaId, usuario.getId());
@@ -313,4 +335,6 @@ public class QuizService {
                                      int pontosPorAcerto, List<DetalheResultado> detalhes) {}
     public record PendenteResponse(Long tentativaId, String dificuldade, int totalQuestoes,
                                    int respondidas, List<String> categorias, LocalDateTime criadoEm) {}
+    public record HistoricoResponse(Long tentativaId, List<String> categorias, String dificuldade,
+                                    int totalQuestoes, int acertos, int pontuacao, LocalDateTime criadoEm) {}
 }
