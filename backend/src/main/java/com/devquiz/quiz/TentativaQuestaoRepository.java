@@ -5,4 +5,5 @@ import java.util.List;
 
 public interface TentativaQuestaoRepository extends JpaRepository<TentativaQuestao, Long> {
     List<TentativaQuestao> findByTentativa_Id(Long tentativaId);
+    List<TentativaQuestao> findByTentativa_IdOrderByIdAsc(Long tentativaId);
 }
