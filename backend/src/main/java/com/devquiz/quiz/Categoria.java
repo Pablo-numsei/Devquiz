@@ -1,6 +1,7 @@
 package com.devquiz.quiz;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Nationalized;
 
 @Entity
 @Table(name = "categorias")
@@ -12,6 +13,7 @@ public class Categoria {
     @Column(nullable = false, length = 60)
     private String nome;
 
+    @Nationalized
     @Column(nullable = false, length = 160)
     private String descricao;
 
