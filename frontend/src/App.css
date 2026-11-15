@@ -226,6 +226,12 @@
 }
 
 
-/* Tema monocromático: preto, branco e tons neutros. */
+/* Tema monocromático em toda a interface, preservando syntax highlighting apenas no developer.js. */
 :root { color-scheme: dark; }
-html { filter: grayscale(1); }
+.app-shell > :not(.hero-section),
+.hero-section > .hero-copy,
+.hero-visual > :not(.code-window),
+.quiz-page,
+.auth-shell {
+  filter: grayscale(1);
+}
