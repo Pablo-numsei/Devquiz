@@ -497,7 +497,7 @@ function App() {
           <span>dev<span className="brand-accent">quiz</span></span>
         </NavLink>
         <nav className="main-nav" aria-label="Navegação principal">
-          <NavLink to="/inicio" className={({ isActive }) => isActive || currentPage === '/' ? 'nav-active' : ''}>Início</NavLink>
+          <NavLink to="/inicio" className={({ isActive }) => isActive ? 'nav-active' : ''}>Início</NavLink>
           <NavLink to="/historico" className={({ isActive }) => isActive ? 'nav-active' : ''}>Histórico</NavLink>
           <NavLink to="/pendentes" className={({ isActive }) => isActive ? 'nav-active' : ''}>Pendentes</NavLink>
         </nav>
