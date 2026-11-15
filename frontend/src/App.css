@@ -230,7 +230,9 @@
 .app-shell > :not(.hero-section),
 .hero-section > .hero-copy,
 .hero-visual > :not(.code-window),
-.auth-shell {
+.auth-panel,
+.auth-aside-glow,
+.auth-aside > p {
   filter: grayscale(1);
 }
 
