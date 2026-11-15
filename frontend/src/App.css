@@ -254,3 +254,27 @@
   .main-nav { gap: 7px; }
   .main-nav a { font-size: 8px; }
 }
+
+
+/* No modo de quiz, a interface permanece monocromática; verde e vermelho indicam apenas o resultado. */
+.quiz-page .brand-mark { border-color: #444; background: #171717; color: #eee; }
+.quiz-page .brand-accent,
+.quiz-page .back-link:hover,
+.quiz-page .question-meta .eyebrow,
+.quiz-page .question-number,
+.quiz-page .question-kicker,
+.quiz-page .review-question-heading > span,
+.quiz-page .review-summary strong,
+.quiz-page .review-explanation strong { color: #eee; }
+.quiz-page .progress-track span { background: #eee; }
+.quiz-page .question-code { border-color: #383838; color: #ddd; }
+.quiz-page .answer-option:hover:not(:disabled),
+.quiz-page .answer-option.selected:not(.correct):not(.incorrect) { border-color: #777; background: #202020; }
+.quiz-page .answer-option.correct { border-color: #4b9b6a; background: rgba(75,155,106,.1); }
+.quiz-page .answer-option.incorrect { border-color: #bd646c; background: rgba(189,100,108,.1); }
+.quiz-page .answer-check { color: #8bd3a2; }
+.quiz-page .explanation { border-color: rgba(139,211,162,.25); background: rgba(139,211,162,.06); }
+.quiz-page .explanation strong { color: #a6d9b5; }
+.quiz-page .review-explanation { border-left-color: #777; background: rgba(255,255,255,.04); }
+.quiz-page .primary-button { border-color: #eee; background: #eee; color: #111; }
+.quiz-page .primary-button:hover:not(:disabled) { background: #fff; box-shadow: 0 8px 25px rgba(255,255,255,.08); }
