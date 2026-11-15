@@ -130,9 +130,15 @@ export async function iniciarTentativa(token, payload) {
   const selectedQuestions = questions.filter((question) =>
     selectedIds.includes(question.categoriaId) && question.dificuldade === payload.dificuldade
   )
-  if (!selectedQuestions.length) throw new Error('Ainda não há questões cadastradas para essa combinação. Selecione outras categorias ou outro nível.')
-  const shuffled = [...selectedQuestions].sort(() => Math.random() - 0.5)
-  const chosen = shuffled.slice(0, Math.min(10, shuffled.length))
+  if (selectedQuestions.length < 10) {
+    throw new Error('Ainda não existem 10 questões disponíveis para essa combinação. Selecione outras categorias ou outro nível.')
+  }
+  const shuffled = [...selectedQuestions]
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1))
+    ;[shuffled[index], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[index]]
+  }
+  const chosen = shuffled.slice(0, 10)
   const data = readData()
   const attempt = {
     tentativaId: data.nextAttemptId++,
