@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { Navigate, NavLink, Route, Routes, useNavigate } from 'react-router-dom'
 import {
   ArrowRight,
   Braces,
@@ -104,7 +104,6 @@ function AuthScreen({ onAuthenticated }) {
 
 function App() {
   const navigate = useNavigate()
-  const location = useLocation()
   const [session, setSession] = useState(null)
   const [categoryOptions, setCategoryOptions] = useState([])
   const [selectedCategoryIds, setSelectedCategoryIds] = useState([])
@@ -490,8 +489,6 @@ function App() {
     )
   }
 
-  const currentPage = location.pathname
-
   return (
     <main className="app-shell">
       <header className="topbar">
@@ -511,148 +508,141 @@ function App() {
         </div>
       </header>
 
-      {currentPage === '/historico' ? (
-        <section className="history-section route-section">
-          <div className="section-heading">
-            <div><div className="eyebrow">SEU DESEMPENHO</div><h2>Quizzes <span>realizados</span></h2></div>
-            <p>Consulte seus resultados e revise as questões respondidas.</p>
-          </div>
-          {completedAttempts.length > 0 ? (
-            <div className="history-grid">
-              {completedAttempts.map((attempt) => (
-                <article className="history-card" key={attempt.tentativaId}>
-                  <div className="history-card-heading">
-                    <strong>{attempt.categorias.join(' + ')}</strong>
-                    <span>{new Date(attempt.criadoEm).toLocaleDateString('pt-BR')}</span>
-                  </div>
-                  <div className="history-card-stats">
-                    <div><strong>{attempt.acertos}/{attempt.totalQuestoes}</strong><small>ACERTOS</small></div>
-                    <div><strong>{attempt.pontuacao}</strong><small>PONTOS</small></div>
-                    <div><strong>{attempt.dificuldade}</strong><small>DIFICULDADE</small></div>
-                  </div>
-                  <button
-                    type="button"
-                    className="history-review-button"
-                    onClick={() => openReview(attempt.tentativaId)}
-                    disabled={reviewLoading}
-                  >
-                    {reviewLoading ? 'Abrindo revisão...' : 'Revisar questões'}
-                    <BookOpen size={15} />
-                  </button>
-                </article>
-              ))}
-            </div>
-          ) : (
-            <p className="history-empty">Você ainda não concluiu nenhum quiz. Depois de finalizar seu primeiro desafio, o resultado aparecerá aqui.</p>
-          )}
-          {error && <div className="auth-error app-error" role="alert">{error}</div>}
-        </section>
-      ) : currentPage === '/pendentes' ? (
-        <section className="pending-section route-section">
-          <div className="section-heading">
-            <div><div className="eyebrow">CONTINUE DE ONDE PAROU</div><h2>Desafios <span>pendentes</span></h2></div>
-            <p>Retome os desafios exatamente de onde você parou.</p>
-          </div>
-          {pendingAttempts.length > 0 ? (
-            <div className="pending-grid">
-              {pendingAttempts.map((attempt) => (
-                <article className="pending-card" key={attempt.tentativaId}>
-                  <div>
-                    <strong>{attempt.categorias.join(' + ')}</strong>
-                    <small>{attempt.dificuldade} | {attempt.respondidas} de {attempt.totalQuestoes} respondidas</small>
-                  </div>
-                  <button className="primary-button" onClick={() => resumeAttempt(attempt.tentativaId)} disabled={loading}>
-                    {loading ? 'Carregando...' : 'Continuar'} <ArrowRight size={16} />
-                  </button>
-                </article>
-              ))}
-            </div>
-          ) : (
-            <p className="history-empty">Nenhum desafio pendente. Quando você sair de um quiz antes de terminá-lo, ele aparecerá aqui.</p>
-          )}
-          {error && <div className="auth-error app-error" role="alert">{error}</div>}
-        </section>
-      ) : (
-        <>
-          <section className="hero-section" id="inicio">
-            <div className="hero-copy">
-              <div className="eyebrow">APRENDA. PRATIQUE. EVOLUA.</div>
-              <h1>Seu próximo nível<br />começa com um <span>desafio.</span></h1>
-              <p className="hero-description">Teste seus conhecimentos em programação, descubra onde melhorar e acompanhe sua evolução, uma questão de cada vez.</p>
-              <div className="hero-actions">
-                <a className="primary-button" href="#categorias">Começar agora <ArrowRight size={17} /></a>
-                <span className="hero-note"><Zap size={15} /> Aprenda no seu ritmo</span>
-              </div>
-              <div className="hero-stats">
-                <div><strong>{String(categoryOptions.length).padStart(2, '0')}</strong><span>ÁREAS DE ESTUDO</span></div>
-                <i />
-                <div><strong>{String(questions.length).padStart(2, '0')}</strong><span>QUESTÕES CADASTRADAS</span></div>
-                <i />
-                <div><strong>03</strong><span>NÍVEIS</span></div>
-              </div>
-            </div>
-
-            <div className="hero-visual" aria-label="Ilustração de código">
-              <div className="visual-glow" />
-              <div className="code-window">
-                <div className="window-top">
-                  <div className="window-dots"><i /><i /><i /></div>
-                  <span>developer.js</span>
-                  <Terminal size={15} />
-                </div>
-                <div className="code-content">
-                  <div className="code-line"><span className="line-number">01</span><span><b className="code-purple">const</b> <b className="code-blue">developer</b> = {'{'}</span></div>
-                  <div className="code-line"><span className="line-number">02</span><span className="indent"><b className="code-cyan">curiosity</b>: <b className="code-green">true</b>,</span></div>
-                  <div className="code-line"><span className="line-number">03</span><span className="indent"><b className="code-cyan">practice</b>: <b className="code-green">"daily"</b>,</span></div>
-                  <div className="code-line"><span className="line-number">04</span><span className="indent"><b className="code-cyan">level</b>: <b className="code-orange">"up"</b>,</span></div>
-                  <div className="code-line"><span className="line-number">05</span><span>{'}'}</span></div>
-                  <div className="code-line code-spacer"><span className="line-number">06</span><span /></div>
-                  <div className="code-line"><span className="line-number">07</span><span><b className="code-purple">function</b> <b className="code-blue">evolve</b>() {'{'}</span></div>
-                  <div className="code-line"><span className="line-number">08</span><span className="indent"><b className="code-purple">return</b> developer.practice;</span></div>
-                  <div className="code-line"><span className="line-number">09</span><span>{'}'}</span></div>
-                </div>
-                <div className="window-bottom"><span><span className="live-dot" /> JavaScript</span><span>UTF-8</span><span>Ln 09, Col 1</span></div>
-              </div>
-              <div className="floating-card"><span className="floating-icon"><Trophy size={17} /></span><div><strong>Seu progresso</strong><small>Começa aqui</small></div><ChevronRight size={16} /></div>
-              <div className="visual-orbit orbit-one" />
-              <div className="visual-orbit orbit-two" />
-            </div>
-          </section>
-
-          <section className="categories-section" id="categorias">
+      <Routes>
+        <Route path="/historico" element={
+          <section className="history-section route-section">
             <div className="section-heading">
-              <div><div className="eyebrow">ESCOLHA SEU FOCO</div><h2>O que vamos <span>praticar?</span></h2></div>
-              <p>Selecione uma ou mais áreas para<br />combinar seus desafios.</p>
+              <div><div className="eyebrow">SEU DESEMPENHO</div><h2>Quizzes <span>realizados</span></h2></div>
+              <p>Consulte seus resultados e revise as questões respondidas.</p>
             </div>
-            <div className="category-grid">
-              {categoryOptions.map((category) => {
-                const Icon = categoryIcons[category.nome] || Code2
-                const isSelected = selectedCategoryIds.includes(category.id)
-                return (
-                  <button key={category.id} className={`category-card ${isSelected ? 'category-selected' : ''}`} onClick={() => toggleCategory(category.id)} aria-pressed={isSelected}>
-                    <span className="category-icon"><Icon size={20} /></span>
-                    <span className="category-info"><strong>{category.nome}</strong><small>{category.descricao}</small><em>{isSelected ? 'Selecionada' : 'Clique para selecionar'}</em></span>
-                    <span className="category-check">{isSelected ? <Check size={14} /> : <ChevronRight size={16} />}</span>
-                  </button>
-                )
-              })}
-            </div>
-            <div className="quiz-config">
-              <div className="difficulty-block"><span className="config-label">NÍVEL DE DIFICULDADE</span><div className="difficulty-options">
-                {['Iniciante', 'Intermediário', 'Avançado'].map((level) => <button key={level} className={difficulty === level ? 'difficulty-active' : ''} onClick={() => setDifficulty(level)}>{level}</button>)}
-              </div></div>
-              <button className="primary-button start-button" onClick={startQuiz} disabled={loading || selectedCategoryIds.length === 0}>
-                {loading ? 'Preparando...' : 'Iniciar desafio'} <ArrowRight size={17} />
-              </button>
-            </div>
+            {completedAttempts.length > 0 ? (
+              <div className="history-grid">
+                {completedAttempts.map((attempt) => (
+                  <article className="history-card" key={attempt.tentativaId}>
+                    <div className="history-card-heading">
+                      <strong>{attempt.categorias.join(' + ')}</strong>
+                      <span>{new Date(attempt.criadoEm).toLocaleDateString('pt-BR')}</span>
+                    </div>
+                    <div className="history-card-stats">
+                      <div><strong>{attempt.acertos}/{attempt.totalQuestoes}</strong><small>ACERTOS</small></div>
+                      <div><strong>{attempt.pontuacao}</strong><small>PONTOS</small></div>
+                      <div><strong>{attempt.dificuldade}</strong><small>DIFICULDADE</small></div>
+                    </div>
+                    <button type="button" className="history-review-button" onClick={() => openReview(attempt.tentativaId)} disabled={reviewLoading}>
+                      {reviewLoading ? 'Abrindo revisão...' : 'Revisar questões'} <BookOpen size={15} />
+                    </button>
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <p className="history-empty">Você ainda não concluiu nenhum quiz. Depois de finalizar seu primeiro desafio, o resultado aparecerá aqui.</p>
+            )}
             {error && <div className="auth-error app-error" role="alert">{error}</div>}
-            {categoryOptions.length === 0 && !error && <p className="question-footnote">Carregando categorias...</p>}
           </section>
-          <footer className="site-footer">
-            <NavLink className="brand footer-brand" to="/inicio"><span className="brand-mark"><Code2 size={18} /></span><span>dev<span className="brand-accent">quiz</span></span></NavLink>
-          </footer>
-        </>
-      )}
+        } />
+        <Route path="/pendentes" element={
+          <section className="pending-section route-section">
+            <div className="section-heading">
+              <div><div className="eyebrow">CONTINUE DE ONDE PAROU</div><h2>Desafios <span>pendentes</span></h2></div>
+              <p>Retome os desafios exatamente de onde você parou.</p>
+            </div>
+            {pendingAttempts.length > 0 ? (
+              <div className="pending-grid">
+                {pendingAttempts.map((attempt) => (
+                  <article className="pending-card" key={attempt.tentativaId}>
+                    <div>
+                      <strong>{attempt.categorias.join(' + ')}</strong>
+                      <small>{attempt.dificuldade} | {attempt.respondidas} de {attempt.totalQuestoes} respondidas</small>
+                    </div>
+                    <button className="primary-button" onClick={() => resumeAttempt(attempt.tentativaId)} disabled={loading}>
+                      {loading ? 'Carregando...' : 'Continuar'} <ArrowRight size={16} />
+                    </button>
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <p className="history-empty">Nenhum desafio pendente. Quando você sair de um quiz antes de terminá-lo, ele aparecerá aqui.</p>
+            )}
+            {error && <div className="auth-error app-error" role="alert">{error}</div>}
+          </section>
+        } />
+        <Route path="/inicio" element={
+          <>
+            <section className="hero-section" id="inicio">
+              <div className="hero-copy">
+                <div className="eyebrow">APRENDA. PRATIQUE. EVOLUA.</div>
+                <h1>Seu próximo nível<br />começa com um <span>desafio.</span></h1>
+                <p className="hero-description">Teste seus conhecimentos em programação, descubra onde melhorar e acompanhe sua evolução, uma questão de cada vez.</p>
+                <div className="hero-actions">
+                  <a className="primary-button" href="#categorias">Começar agora <ArrowRight size={17} /></a>
+                  <span className="hero-note"><Zap size={15} /> Aprenda no seu ritmo</span>
+                </div>
+                <div className="hero-stats">
+                  <div><strong>{String(categoryOptions.length).padStart(2, '0')}</strong><span>ÁREAS DE ESTUDO</span></div>
+                  <i />
+                  <div><strong>{String(questions.length).padStart(2, '0')}</strong><span>QUESTÕES CADASTRADAS</span></div>
+                  <i />
+                  <div><strong>03</strong><span>NÍVEIS</span></div>
+                </div>
+              </div>
+              <div className="hero-visual" aria-label="Ilustração de código">
+                <div className="visual-glow" />
+                <div className="code-window">
+                  <div className="window-top"><div className="window-dots"><i /><i /><i /></div><span>developer.js</span><Terminal size={15} /></div>
+                  <div className="code-content">
+                    <div className="code-line"><span className="line-number">01</span><span><b className="code-purple">const</b> <b className="code-blue">developer</b> = {'{'}</span></div>
+                    <div className="code-line"><span className="line-number">02</span><span className="indent"><b className="code-cyan">curiosity</b>: <b className="code-green">true</b>,</span></div>
+                    <div className="code-line"><span className="line-number">03</span><span className="indent"><b className="code-cyan">practice</b>: <b className="code-green">"daily"</b>,</span></div>
+                    <div className="code-line"><span className="line-number">04</span><span className="indent"><b className="code-cyan">level</b>: <b className="code-orange">"up"</b>,</span></div>
+                    <div className="code-line"><span className="line-number">05</span><span>{'}'}</span></div>
+                    <div className="code-line code-spacer"><span className="line-number">06</span><span /></div>
+                    <div className="code-line"><span className="line-number">07</span><span><b className="code-purple">function</b> <b className="code-blue">evolve</b>() {'{'}</span></div>
+                    <div className="code-line"><span className="line-number">08</span><span className="indent"><b className="code-purple">return</b> developer.practice;</span></div>
+                    <div className="code-line"><span className="line-number">09</span><span>{'}'}</span></div>
+                  </div>
+                  <div className="window-bottom"><span><span className="live-dot" /> JavaScript</span><span>UTF-8</span><span>Ln 09, Col 1</span></div>
+                </div>
+                <div className="floating-card"><span className="floating-icon"><Trophy size={17} /></span><div><strong>Seu progresso</strong><small>Começa aqui</small></div><ChevronRight size={16} /></div>
+                <div className="visual-orbit orbit-one" />
+                <div className="visual-orbit orbit-two" />
+              </div>
+            </section>
+            <section className="categories-section" id="categorias">
+              <div className="section-heading">
+                <div><div className="eyebrow">ESCOLHA SEU FOCO</div><h2>O que vamos <span>praticar?</span></h2></div>
+                <p>Selecione uma ou mais áreas para<br />combinar seus desafios.</p>
+              </div>
+              <div className="category-grid">
+                {categoryOptions.map((category) => {
+                  const Icon = categoryIcons[category.nome] || Code2
+                  const isSelected = selectedCategoryIds.includes(category.id)
+                  return (
+                    <button key={category.id} className={`category-card ${isSelected ? 'category-selected' : ''}`} onClick={() => toggleCategory(category.id)} aria-pressed={isSelected}>
+                      <span className="category-icon"><Icon size={20} /></span>
+                      <span className="category-info"><strong>{category.nome}</strong><small>{category.descricao}</small><em>{isSelected ? 'Selecionada' : 'Clique para selecionar'}</em></span>
+                      <span className="category-check">{isSelected ? <Check size={14} /> : <ChevronRight size={16} />}</span>
+                    </button>
+                  )
+                })}
+              </div>
+              <div className="quiz-config">
+                <div className="difficulty-block"><span className="config-label">NÍVEL DE DIFICULDADE</span><div className="difficulty-options">
+                  {['Iniciante', 'Intermediário', 'Avançado'].map((level) => <button key={level} className={difficulty === level ? 'difficulty-active' : ''} onClick={() => setDifficulty(level)}>{level}</button>)}
+                </div></div>
+                <button className="primary-button start-button" onClick={startQuiz} disabled={loading || selectedCategoryIds.length === 0}>
+                  {loading ? 'Preparando...' : 'Iniciar desafio'} <ArrowRight size={17} />
+                </button>
+              </div>
+              {error && <div className="auth-error app-error" role="alert">{error}</div>}
+              {categoryOptions.length === 0 && !error && <p className="question-footnote">Carregando categorias...</p>}
+            </section>
+            <footer className="site-footer">
+              <NavLink className="brand footer-brand" to="/inicio"><span className="brand-mark"><Code2 size={18} /></span><span>dev<span className="brand-accent">quiz</span></span></NavLink>
+            </footer>
+          </>
+        } />
+        <Route path="*" element={<Navigate to="/inicio" replace />} />
+      </Routes>
     </main>
   )
 }
