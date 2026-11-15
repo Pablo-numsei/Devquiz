@@ -194,4 +194,7 @@ export const questions = [
   q(179,6,"Avançado","Qual é o objetivo de um plano de resposta a incidentes?",["Organizar preparação, detecção, contenção, erradicação e recuperação","Garantir que incidentes nunca ocorram","Substituir backups","Eliminar monitoramento"],0,"Um plano define papéis e procedimentos para responder de forma coordenada."),
   q(180,6,"Avançado","Qual prática é adequada para armazenar segredos de aplicação?",["Usar variáveis de ambiente ou um gerenciador de segredos e restringir acessos","Comitar senhas no Git","Colocar chaves no frontend","Compartilhar tokens em mensagens públicas"],0,"Segredos devem ficar fora do código e ser acessíveis apenas a processos autorizados."),
 
+  q(181,3,"Avançado","Qual é o efeito de usar :focus-visible em CSS?",["Aplica estilos de foco quando o navegador considera que o foco deve ser indicado visualmente","Remove o foco do teclado","Impede cliques","Aplica estilo apenas ao passar o mouse"],0,":focus-visible permite destacar foco de teclado sem necessariamente exibir o mesmo indicador em interações por mouse."),
+  q(182,4,"Avançado","O que a palavra-chave synchronized garante em um método Java?",["Acesso exclusivo ao bloco protegido pelo monitor do objeto ou classe","Execução em paralelo sem bloqueios","Persistência dos dados","Que o método seja estático"],0,"synchronized usa um monitor para garantir exclusão mútua entre threads que sincronizam pelo mesmo monitor."),
+
 ]
