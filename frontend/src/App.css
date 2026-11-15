@@ -230,7 +230,6 @@
 .app-shell > :not(.hero-section),
 .hero-section > .hero-copy,
 .hero-visual > :not(.code-window),
-.quiz-page,
 .auth-shell {
   filter: grayscale(1);
 }
