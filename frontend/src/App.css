@@ -10,7 +10,6 @@
 .live-dot { display: inline-block; width: 6px; height: 6px; background: #8bdaa9; border-radius: 50%; box-shadow: 0 0 10px rgba(139,218,169,.45); }
 .hero-section { min-height: 535px; display: grid; grid-template-columns: 1.04fr .96fr; align-items: center; gap: 44px; padding: 60px 0 72px; }
 .eyebrow { display: flex; align-items: center; gap: 10px; color: var(--purple); font: 600 10px var(--mono); letter-spacing: 1.4px; }
-.eyebrow-line { width: 22px; height: 1px; background: var(--purple); }
 .hero-copy h1 { margin: 23px 0 17px; color: var(--white); font-size: clamp(38px, 4.7vw, 57px); line-height: 1.12; letter-spacing: -2.6px; font-weight: 700; }
 .hero-copy h1 span, .section-heading h2 span { color: var(--purple); }
 .hero-description { max-width: 490px; color: #9694a2; font-size: 14px; line-height: 1.85; }
