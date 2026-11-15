@@ -2,23 +2,23 @@
 
 :root {
   font-family: 'DM Sans', sans-serif;
-  color: #f1f0f5;
-  background: #0b0b10;
+  color: #ffffff;
+  background: #000000;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-optical-sizing: auto;
   font-weight: 400;
-  --bg: #0b0b10;
-  --surface: #111118;
-  --surface-raised: #15151e;
-  --border: #252530;
-  --muted: #898895;
-  --soft: #b7b5c2;
-  --white: #f1f0f5;
-  --purple: #a78bfa;
-  --purple-bright: #b69cff;
+  --bg: #000000;
+  --surface: #0a0a0a;
+  --surface-raised: #151515;
+  --border: #303030;
+  --muted: #999999;
+  --soft: #cccccc;
+  --white: #ffffff;
+  --purple: #ffffff;
+  --purple-bright: #e5e5e5;
   --mono: 'JetBrains Mono', monospace;
 }
 
@@ -28,5 +28,5 @@ body { margin: 0; min-width: 320px; min-height: 100vh; }
 button, a { font: inherit; }
 button { color: inherit; }
 a { color: inherit; text-decoration: none; }
-button:focus-visible, a:focus-visible { outline: 2px solid var(--purple); outline-offset: 4px; }
-::selection { background: rgba(167,139,250,.28); color: white; }
+button:focus-visible, a:focus-visible { outline: 2px solid #ffffff; outline-offset: 4px; }
+::selection { background: #ffffff; color: #000000; }
