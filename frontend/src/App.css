@@ -234,3 +234,24 @@
 .auth-shell {
   filter: grayscale(1);
 }
+
+
+/* Navegação por páginas com React Router DOM */
+.route-section { min-height: calc(100vh - 82px); padding-top: 52px; }
+.main-nav a { text-decoration: none; }
+.main-nav a.nav-active { color: var(--white); }
+@media (max-width: 760px) {
+  .main-nav { display: flex; gap: 14px; margin-left: auto; }
+  .main-nav a { font-size: 10px; white-space: nowrap; }
+  .user-session { margin-left: 0; }
+}
+@media (max-width: 560px) {
+  .main-nav { gap: 10px; }
+  .main-nav a { font-size: 9px; }
+  .route-section { min-height: calc(100vh - 68px); padding-top: 35px; }
+}
+@media (max-width: 390px) {
+  .topbar { gap: 7px; }
+  .main-nav { gap: 7px; }
+  .main-nav a { font-size: 8px; }
+}
