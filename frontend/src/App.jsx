@@ -61,7 +61,7 @@ function AuthScreen({ onAuthenticated }) {
           <span>dev<span className="brand-accent">quiz</span></span>
         </a>
         <div className="auth-heading">
-          <div className="eyebrow"><span className="eyebrow-line" /> SUA JORNADA COMEÇA AQUI</div>
+          <div className="eyebrow">SUA JORNADA COMEÇA AQUI</div>
           <h1>{mode === 'register' ? 'Crie seu perfil.' : 'Entre para praticar.'}</h1>
           <p>{mode === 'register' ? 'Escolha um apelido e um PIN de 4 dígitos para salvar seu progresso.' : 'Acesse seu perfil e continue acompanhando sua evolução.'}</p>
         </div>
@@ -499,7 +499,7 @@ function App() {
 
       <section className="hero-section" id="inicio">
         <div className="hero-copy">
-          <div className="eyebrow"><span className="eyebrow-line" /> APRENDA. PRATIQUE. EVOLUA.</div>
+          <div className="eyebrow">APRENDA. PRATIQUE. EVOLUA.</div>
           <h1>Seu próximo nível<br />começa com um <span>desafio.</span></h1>
           <p className="hero-description">Teste seus conhecimentos em programação, descubra onde melhorar e acompanhe sua evolução, uma questão de cada vez.</p>
           <div className="hero-actions">
@@ -544,7 +544,7 @@ function App() {
 
       <section className="pending-section">
         <div className="section-heading">
-          <div><div className="eyebrow"><span className="eyebrow-line" /> CONTINUE DE ONDE PAROU</div><h2>Desafios <span>em andamento</span></h2></div>
+          <div><div className="eyebrow">CONTINUE DE ONDE PAROU</div><h2>Desafios <span>em andamento</span></h2></div>
           <p>Suas tentativas incompletas ficam salvas aqui.</p>
         </div>
         {pendingAttempts.length > 0 ? (
@@ -568,7 +568,7 @@ function App() {
 
       <section className="history-section">
         <div className="section-heading">
-          <div><div className="eyebrow"><span className="eyebrow-line" /> SEU DESEMPENHO</div><h2>Quizzes <span>realizados</span></h2></div>
+          <div><div className="eyebrow">SEU DESEMPENHO</div><h2>Quizzes <span>realizados</span></h2></div>
           <p>Consulte os resultados das suas tentativas concluídas.</p>
         </div>
         {completedAttempts.length > 0 ? (
@@ -603,7 +603,7 @@ function App() {
 
       <section className="categories-section" id="categorias">
         <div className="section-heading">
-          <div><div className="eyebrow"><span className="eyebrow-line" /> ESCOLHA SEU FOCO</div><h2>O que vamos <span>praticar?</span></h2></div>
+          <div><div className="eyebrow">ESCOLHA SEU FOCO</div><h2>O que vamos <span>praticar?</span></h2></div>
           <p>Selecione uma ou mais áreas para<br />combinar seus desafios.</p>
         </div>
         <div className="category-grid">
