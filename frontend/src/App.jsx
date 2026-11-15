@@ -71,7 +71,7 @@ function AuthScreen({ onAuthenticated }) {
         </div>
         <form className="auth-form" onSubmit={submit}>
           <label htmlFor="nickname">APELIDO</label>
-          <input id="nickname" value={apelido} onChange={(event) => setApelido(event.target.value.replace(/[^a-zA-Z0-9_]/g, '').slice(0, 20))} placeholder="Ex.: DevPablo" minLength={3} maxLength={20} autoComplete="username" required />
+          <input id="nickname" value={apelido} onChange={(event) => setApelido(event.target.value.replace(/[^a-zA-Z0-9_]/g, '').slice(0, 20))} placeholder="Seu apelido" minLength={3} maxLength={20} autoComplete="username" required />
           <small>De 3 a 20 caracteres. Use letras, números ou _.</small>
           <label htmlFor="pin">PIN DE 4 DÍGITOS</label>
           <input id="pin" type="password" inputMode="numeric" pattern="[0-9]{4}" maxLength={4} value={pin} onChange={(event) => setPin(event.target.value.replace(/\D/g, '').slice(0, 4))} placeholder="••••" autoComplete={mode === 'register' ? 'new-password' : 'current-password'} required />
@@ -631,7 +631,7 @@ function App() {
         {categoryOptions.length === 0 && !error && <p className="question-footnote">Carregando categorias...</p>}
       </section>
 
-      <footer className="site-footer" id="sobre"><a className="brand footer-brand" href="#inicio"><span className="brand-mark"><Code2 size={18} /></span><span>dev<span className="brand-accent">quiz</span></span></a><span>Feito para quem transforma curiosidade em código.</span><span className="footer-version">DEVQUIZ <b>·</b> 2026</span></footer>
+      <footer className="site-footer" id="sobre"><a className="brand footer-brand" href="#inicio"><span className="brand-mark"><Code2 size={18} /></span><span>dev<span className="brand-accent">quiz</span></span></a></footer>
     </main>
   )
 }
