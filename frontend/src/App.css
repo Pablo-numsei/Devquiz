@@ -278,3 +278,10 @@
 .quiz-page .review-explanation { border-left-color: #777; background: rgba(255,255,255,.04); }
 .quiz-page .primary-button { border-color: #eee; background: #eee; color: #111; }
 .quiz-page .primary-button:hover:not(:disabled) { background: #fff; box-shadow: 0 8px 25px rgba(255,255,255,.08); }
+
+/* Syntax highlighting do editor exibido na tela de login */
+.auth-code-card .code-purple { color: #c4a5ff !important; }
+.auth-code-card .code-blue { color: #9ebcff !important; }
+.auth-code-card .code-cyan { color: #83d4d2 !important; }
+.auth-code-card .code-green { color: #a8d6a1 !important; }
+.auth-code-card .code-orange { color: #e8b58b !important; }
