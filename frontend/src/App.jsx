@@ -16,6 +16,7 @@ import {
   Zap,
 } from 'lucide-react'
 import './App.css'
+import { questions } from './data/questions.js'
 import { cadastrarUsuario, entrarUsuario, buscarPerfil, listarCategorias, listarTentativasPendentes, listarHistoricoTentativas, iniciarTentativa, obterTentativa, salvarResposta, finalizarTentativa, revisarTentativa } from './services/auth.js'
 
 const categoryIcons = {
@@ -79,7 +80,7 @@ function AuthScreen({ onAuthenticated }) {
             {loading ? 'Aguarde...' : mode === 'register' ? 'Criar perfil' : 'Entrar no DevQuiz'} <ArrowRight size={17} />
           </button>
         </form>
-        <p className="auth-privacy"><LockKeyhole size={13} /> Seu PIN é armazenado de forma protegida.</p>
+        <p className="auth-privacy"><LockKeyhole size={13} /> Seu PIN é armazenado localmente em formato de hash.</p>
       </section>
       <aside className="auth-aside">
         <div className="auth-aside-glow" />
@@ -402,7 +403,7 @@ function App() {
                 <i />
                 <div><strong>{quizResult.pontuacao}</strong><span>PONTOS</span></div>
               </div>
-              <p className="result-summary">Cada resposta foi corrigida pelo servidor e seu resultado foi salvo.</p>
+              <p className="result-summary">Suas respostas foram corrigidas e o resultado foi salvo neste navegador.</p>
               <div className="result-details">
                 {quizResult.detalhes.map((detail, index) => (
                   <div className="result-detail" key={detail.questaoId}>
@@ -471,7 +472,7 @@ function App() {
                   )}
                 </div>
               </article>
-              <p className="question-footnote">Sua resposta é salva no banco ao confirmar. Você pode sair e continuar depois.</p>
+              <p className="question-footnote">Sua resposta é salva neste navegador. Você pode sair e continuar depois.</p>
             </>
           ) : (
             <div className="question-card"><p>Não foi possível carregar as questões desta tentativa.</p></div>
@@ -508,7 +509,7 @@ function App() {
           <div className="hero-stats">
             <div><strong>{String(categoryOptions.length).padStart(2, '0')}</strong><span>ÁREAS DE ESTUDO</span></div>
             <i />
-            <div><strong>10</strong><span>QUESTÕES CADASTRADAS</span></div>
+            <div><strong>{String(questions.length).padStart(2, '0')}</strong><span>QUESTÕES CADASTRADAS</span></div>
             <i />
             <div><strong>03</strong><span>NÍVEIS</span></div>
           </div>
